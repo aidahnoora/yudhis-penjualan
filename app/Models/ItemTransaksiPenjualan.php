@@ -13,7 +13,6 @@ class ItemTransaksiPenjualan extends Model
         'penjualan_id',
         'barang_id',
         'qty',
-        'harga',
         'subtotal',
     ];
 

@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('transaksi_penjualans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
+            $table->foreignId('customer_id');
             $table->string('nota');
-            $table->dateTime('tgl_transaksi');
-            $table->double('total');
-            $table->double('bayar');
-            $table->double('kembalian')->default(0);
+            $table->date('tgl_transaksi');
+            $table->integer('total');
             $table->timestamps();
         });
     }

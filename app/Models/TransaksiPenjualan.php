@@ -11,16 +11,20 @@ class TransaksiPenjualan extends Model
 
     protected $fillable = [
         'user_id',
+        'customer_id',
         'nota',
         'tgl_transaksi',
         'total',
-        'bayar',
-        'kembalian',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function item_penjualans()

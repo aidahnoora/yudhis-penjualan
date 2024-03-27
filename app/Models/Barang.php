@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +15,7 @@ class Barang extends Model
         'nama',
         'stok',
         'harga',
+        'image'
     ];
 
     public function supplier()
@@ -24,5 +26,12 @@ class Barang extends Model
     public function item_penjualans()
     {
         return $this->hasMany(ItemTransaksiPenjualan::class);
+    }
+
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($image) => url('/storage/posts/' . $image),
+        );
     }
 }

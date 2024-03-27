@@ -16,8 +16,7 @@ return new class extends Migration
             $table->foreignId('penjualan_id');
             $table->foreignId('barang_id');
             $table->integer('qty');
-            $table->double('harga');
-            $table->double('subtotal');
+            $table->integer('subtotal');
             $table->timestamps();
         });
     }

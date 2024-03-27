@@ -1,5 +1,33 @@
+
 <script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
+import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
+import api from '../../api'
+
+const router = useRouter()
+
+const handleLogout = async () => {
+  try {
+    await api.post('/api/logout')
+    localStorage.removeItem('loggedIn')
+    localStorage.removeItem('token')
+    Swal.fire({
+      icon: 'success',
+      title: 'Berhasil',
+      text: 'Logout berhasil!',
+    }).then(() => {
+      router.push({ path: '/login' })
+    })
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Gagal logout!',
+    })
+    console.error('Logout error:', error)
+  }
+}
 </script>
 
 <template>
@@ -55,7 +83,10 @@ import avatar1 from '@images/avatars/avatar-1.png'
           <VDivider class="my-2" />
 
           <!-- 👉 Profile -->
-          <VListItem link>
+          <VListItem
+            link
+            to="/profile"
+          >
             <template #prepend>
               <VIcon
                 class="me-2"
@@ -68,7 +99,10 @@ import avatar1 from '@images/avatars/avatar-1.png'
           </VListItem>
 
           <!-- 👉 Settings -->
-          <VListItem link>
+          <VListItem
+            link
+            to="/settings"
+          >
             <template #prepend>
               <VIcon
                 class="me-2"
@@ -84,7 +118,7 @@ import avatar1 from '@images/avatars/avatar-1.png'
           <VDivider class="my-2" />
 
           <!-- 👉 Logout -->
-          <VListItem to="/login">
+          <VListItem @click="handleLogout">
             <template #prepend>
               <VIcon
                 class="me-2"
@@ -92,7 +126,6 @@ import avatar1 from '@images/avatars/avatar-1.png'
                 size="22"
               />
             </template>
-
             <VListItemTitle>Logout</VListItemTitle>
           </VListItem>
         </VList>

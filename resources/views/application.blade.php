@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="{{ asset('favicon.ico') }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Penjualan Sparepart Yudhis Motor</title>
+    <title>SI Penjualan - Yudhis Motor</title>
     <link rel="stylesheet" type="text/css" href="{{ asset('loader.css') }}" />
     @vite(['resources/js/main.js'])
 </head>

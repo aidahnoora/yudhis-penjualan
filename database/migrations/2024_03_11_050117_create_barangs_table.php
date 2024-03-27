@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('supplier_id');
             $table->string('nama');
             $table->integer('stok');
-            $table->double('harga');
+            $table->integer('harga');
+            $table->string('image');
             $table->timestamps();
         });
     }

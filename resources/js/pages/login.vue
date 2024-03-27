@@ -1,6 +1,8 @@
 <script setup>
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import logo from '@images/logo.svg?raw'
+import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
+import api from '../api'
 
 const form = ref({
   email: '',
@@ -8,7 +10,48 @@ const form = ref({
   remember: false,
 })
 
+const router = useRouter()
+const errors = ref([])
 const isPasswordVisible = ref(false)
+const loggedIn = localStorage.getItem('loggedIn')
+const token = localStorage.getItem('token')
+const user = []
+let loginFailed = null
+
+const login = async () => {
+  if (form.value.email && form.value.password) {
+    try {
+      await api.get('/sanctum/csrf-cookie')
+
+      const response = await api.post('/api/login', {
+        email: form.value.email,
+        password: form.value.password,
+      })
+
+      localStorage.setItem('loggedIn', true)
+      localStorage.setItem('token', token)
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: 'Login berhasil!',
+      }).then(() => {
+        router.push({ path: 'dashboard' })
+      })
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Gagal login!',
+      })
+      errors.value = error.response.data
+      loginFailed = true
+    }
+  } else {
+    validation.email = !form.value.email
+    validation.password = !form.value.password
+  }
+}
 </script>
 
 <template>
@@ -28,13 +71,13 @@ const isPasswordVisible = ref(false)
         </template>
 
         <VCardTitle class="text-2xl font-weight-bold">
-          sneat
+          Yudhis Motor
         </VCardTitle>
       </VCardItem>
 
       <VCardText class="pt-2">
         <h5 class="text-h5 mb-1">
-          Welcome to sneat! 👋🏻
+          Sistem Informasi Penjualan
         </h5>
         <p class="mb-0">
           Please sign-in to your account and start the adventure
@@ -42,7 +85,7 @@ const isPasswordVisible = ref(false)
       </VCardText>
 
       <VCardText>
-        <VForm @submit.prevent="$router.push('/')">
+        <VForm @submit.prevent="login">
           <VRow>
             <!-- email -->
             <VCol cols="12">
@@ -53,6 +96,9 @@ const isPasswordVisible = ref(false)
                 label="Email"
                 type="email"
               />
+              <VCol v-if="errors.email">
+                <span style="color: red;">*{{ errors.email[0] }}</span>
+              </VCol>
             </VCol>
 
             <!-- password -->
@@ -65,29 +111,19 @@ const isPasswordVisible = ref(false)
                 :append-inner-icon="isPasswordVisible ? 'bx-hide' : 'bx-show'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
-
-              <!-- remember me checkbox -->
-              <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
-                <VCheckbox
-                  v-model="form.remember"
-                  label="Remember me"
-                />
-
-                <RouterLink
-                  class="text-primary ms-2 mb-1"
-                  to="javascript:void(0)"
-                >
-                  Forgot Password?
-                </RouterLink>
-              </div>
+              <VCol v-if="errors.password">
+                <span style="color: red;">*{{ errors.password[0] }}</span>
+              </VCol>
 
               <!-- login button -->
-              <VBtn
-                block
-                type="submit"
-              >
-                Login
-              </VBtn>
+              <VCol>
+                <VBtn
+                  block
+                  type="submit"
+                >
+                  Login
+                </VBtn>
+              </VCol>
             </VCol>
 
             <!-- create account -->
@@ -102,23 +138,6 @@ const isPasswordVisible = ref(false)
               >
                 Create an account
               </RouterLink>
-            </VCol>
-
-            <VCol
-              cols="12"
-              class="d-flex align-center"
-            >
-              <VDivider />
-              <span class="mx-4">or</span>
-              <VDivider />
-            </VCol>
-
-            <!-- auth providers -->
-            <VCol
-              cols="12"
-              class="text-center"
-            >
-              <AuthProvider />
             </VCol>
           </VRow>
         </VForm>
