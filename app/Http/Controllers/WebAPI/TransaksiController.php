@@ -13,6 +13,7 @@ use App\Models\TransaksiPenjualan;
 use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -66,7 +67,7 @@ class TransaksiController extends Controller
 
         $transaksi = DB::transaction(function () use ($request) {
             $header = TransaksiPenjualan::create([
-                'user_id' => 1,
+                'user_id' => Auth::user()->id,
                 'customer_id' => $request->customer_id,
                 'nota' => $request->nota,
                 'tgl_transaksi' => $request->tgl_transaksi,
@@ -121,7 +122,7 @@ class TransaksiController extends Controller
         $transaksi = TransaksiPenjualan::find($id);
 
         $transaksi->update([
-            'user_id' => 1,
+            'user_id' => Auth::user()->id,
             'customer_id' => $request->customer_id,
             'nota' => $request->nota,
             'tgl_transaksi' => $request->tgl_transaksi,

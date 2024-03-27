@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->paginate(100);
+        $users = User::paginate(100);
 
         return new UserResource(true, 'List Data Users', $users);
     }
