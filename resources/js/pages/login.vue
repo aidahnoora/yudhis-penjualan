@@ -1,5 +1,4 @@
 <script setup>
-import logo from '@images/logo.svg?raw'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
 import api from '../api'
@@ -63,10 +62,12 @@ const login = async () => {
       <VCardItem class="justify-center">
         <template #prepend>
           <div class="d-flex">
-            <div
-              class="d-flex text-primary"
-              v-html="logo"
-            />
+            <div class="d-flex text-primary">
+              <img
+                src="/yudhis-logo.jpeg"
+                style="max-width: 100px; height: auto;"
+              >
+            </div>
           </div>
         </template>
 
@@ -92,7 +93,7 @@ const login = async () => {
               <VTextField
                 v-model="form.email"
                 autofocus
-                placeholder="johndoe@email.com"
+                placeholder="wildan@email.com"
                 label="Email"
                 type="email"
               />

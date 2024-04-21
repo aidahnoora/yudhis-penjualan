@@ -82,7 +82,7 @@ const supplierOptions = computed(() => {
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard title="Tambah Data Barang">
+      <VCard title="Edit Data Barang">
         <VCardText>
           <VForm @submit.prevent="updateBarang">
             <VCol cols="12">

@@ -90,7 +90,7 @@ const deleteTransaksi = async id => {
             <tbody>
               <tr v-if="transaksis.length == 0">
                 <td
-                  colspan="4"
+                  colspan="6"
                   class="text-center"
                 >
                   Data Belum Tersedia!

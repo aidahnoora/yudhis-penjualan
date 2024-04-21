@@ -76,46 +76,49 @@ const handleLogout = async () => {
             </template>
 
             <VListItemTitle class="font-weight-semibold">
-              John Doe
+              Web Area
             </VListItemTitle>
             <VListItemSubtitle>Admin</VListItemSubtitle>
           </VListItem>
           <VDivider class="my-2" />
 
           <!-- 👉 Profile -->
-          <VListItem
+          <!--
+            <VListItem
             link
             to="/profile"
-          >
+            >
             <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="bx-user"
-                size="22"
-              />
+            <VIcon
+            class="me-2"
+            icon="bx-user"
+            size="22"
+            />
             </template>
 
-            <VListItemTitle>Profile</VListItemTitle>
-          </VListItem>
+            <VListItemTitle>Profile</VListItemTitle> 
+            </VListItem> 
+          -->
 
           <!-- 👉 Settings -->
-          <VListItem
+          <!--
+            <VListItem
             link
             to="/settings"
-          >
+            >
             <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="bx-cog"
-                size="22"
-              />
+            <VIcon
+            class="me-2"
+            icon="bx-cog"
+            size="22"
+            />
             </template>
 
             <VListItemTitle>Settings</VListItemTitle>
-          </VListItem>
+            </VListItem> 
+          -->
 
           <!-- Divider -->
-          <VDivider class="my-2" />
 
           <!-- 👉 Logout -->
           <VListItem @click="handleLogout">

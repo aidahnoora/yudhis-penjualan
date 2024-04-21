@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\WebAPI\BarangController;
 use App\Http\Controllers\WebAPI\CustomerController;
+use App\Http\Controllers\WebAPI\DashboardController;
 use App\Http\Controllers\WebAPI\LoginController;
 use App\Http\Controllers\WebAPI\SupplierController;
 use App\Http\Controllers\WebAPI\TransaksiController;
@@ -38,3 +39,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transaksis/{transaksiId}/items', [TransaksiController::class, 'getItemTransaksis']);
     Route::get('/laporan-transaksi-penjualan', [TransaksiController::class, 'report']);
 });
+
+Route::get('/get-transaction', [DashboardController::class, 'getTransaction'])->name('get-transaction');

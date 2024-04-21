@@ -1,7 +1,7 @@
 <script setup>
-import { useTheme } from 'vuetify'
 import illustrationJohnDark from '@images/cards/illustration-john-dark.png'
 import illustrationJohnLight from '@images/cards/illustration-john-light.png'
+import { useTheme } from 'vuetify'
 
 const { global } = useTheme()
 const illustrationJohn = computed(() => global.name.value === 'dark' ? illustrationJohnDark : illustrationJohnLight)
@@ -18,24 +18,26 @@ const illustrationJohn = computed(() => global.name.value === 'dark' ? illustrat
       >
         <VCardItem>
           <VCardTitle class="text-md-h5 text-primary">
-            Congratulations John! 🎉
+            Welcome! 🎉
           </VCardTitle>
         </VCardItem>
 
         <VCardText>
           <span>
-            You have done 72% 🤩 more sales today.
+            Selamat datang di
             <br>
-            Check your new raising badge in your profile.
+            Sistem Informasi Penjualan Yudhis Motor
           </span>
           <br>
-          <VBtn
-            variant="tonal"
-            class="mt-4"
-            size="small"
-          >
-            View Badges
-          </VBtn>
+          <RouterLink to="/transaksis">
+            <VBtn
+              variant="tonal"
+              class="mt-4"
+              size="small"
+            >
+              Lihat Transaksi
+            </VBtn>
+          </RouterLink>
         </VCardText>
       </VCol>
 

@@ -53,7 +53,7 @@ const updateCustomer = async () => {
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard title="Edit Data Supplier">
+      <VCard title="Edit Data Customer">
         <VCardText>
           <VForm @submit.prevent="updateCustomer">
             <VCol cols="12">
