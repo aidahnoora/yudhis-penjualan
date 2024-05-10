@@ -1,7 +1,9 @@
 <script setup>
+import AnalyticsFinanceTab from '@/views/dashboard/AnalyticsFinanceTab.vue'
 import Swal from 'sweetalert2'
 import { onMounted, ref } from 'vue'
 import api from '../../api'
+
 
 const transaksis = ref([])
 
@@ -40,6 +42,12 @@ const deleteTransaksi = async id => {
 </script>
 
 <template>
+  <VCol
+    cols="12"
+    md="12"
+  >
+    <AnalyticsFinanceTab />
+  </VCol>
   <VRow>
     <VCol cols="12">
       <VCard>
@@ -114,7 +122,7 @@ const deleteTransaksi = async id => {
                   {{ transaksi.tgl_transaksi }}
                 </td>
                 <td class="text-center">
-                  {{ transaksi.total }}
+                  Rp. {{ transaksi.total }}
                 </td>
                 <td class="text-center">
                   <RouterLink :to="{ name: 'transaksis.show', params:{id: transaksi.id} }">

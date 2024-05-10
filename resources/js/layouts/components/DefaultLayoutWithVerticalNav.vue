@@ -82,6 +82,14 @@ const upgradeBanner = computed(() => {
           to: '/customers',
         }"
       />
+      
+      <VerticalNavLink
+        :item="{
+          title: 'Transaksi Pembelian',
+          icon: 'bx-money',
+          to: '/pembelians',
+        }"
+      />
       <VerticalNavLink
         :item="{
           title: 'Transaksi Penjualan',
@@ -98,9 +106,16 @@ const upgradeBanner = computed(() => {
       />
       <VerticalNavLink
         :item="{
-          title: 'Laporan',
+          title: 'Laporan Penjualan',
           icon: 'mdi-report-bar',
-          to: '/laporan',
+          to: '/laporan-penjualan',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
+          title: 'Laporan Pembelian',
+          icon: 'mdi-report-bar',
+          to: '/laporan-pembelian',
         }"
       />
     </template>

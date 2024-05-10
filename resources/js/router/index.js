@@ -40,6 +40,18 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
+          path: 'users',
+          name: 'users.create',
+          component: () => import('../pages/user/create.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'users/edit/:id',
+          name: 'users.edit',
+          component: () => import('../pages/user/edit.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
           path: 'barangs',
           name: 'barangs.index',
           component: () => import('../pages/barang/index.vue'),
@@ -100,16 +112,46 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: 'laporan',
-          name: 'laporan',
-          component: () => import('../pages/laporan/index.vue'),
+          path: 'pembelians',
+          name: 'pembelians.index',
+          component: () => import('../pages/pembelian/index.vue'),
           meta: { requiresAuth: true },
         },
         {
-          path: '/logout',
-          name: 'Logout',
+          path: 'pembelians/create',
+          name: 'pembelians.create',
+          component: () => import('../pages/pembelian/create.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'pembelians/edit/:id',
+          name: 'pembelians.edit',
+          component: () => import('../pages/pembelian/edit.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'pembelians/show/:id',
+          name: 'pembelians.show',
+          component: () => import('../pages/pembelian/show.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'laporan-penjualan',
+          name: 'laporan-penjualan',
+          component: () => import('../pages/laporan/penjualan.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'laporan-pembelian',
+          name: 'laporan-pembelian',
+          component: () => import('../pages/laporan/pembelian.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'logout',
+          name: 'logout',
           beforeEnter: (to, from, next) => {
-            next('/login')
+            next('login')
           },
           meta: { requiresAuth: true },
         },
@@ -121,6 +163,7 @@ const router = createRouter({
       children: [
         {
           path: 'login',
+          name: 'login',
           component: () => import('../pages/login.vue'),
         },
         {

@@ -29,7 +29,6 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'supplier_id' => 'required',
             'nama' => 'required',
             'stok' => 'required',
             'harga' => 'required',
@@ -45,7 +44,6 @@ class BarangController extends Controller
         $image->storeAs('public/posts', $image->hashName());
 
         $barang = Barang::create([
-            'supplier_id' => $request->supplier_id,
             'nama' => $request->nama,
             'stok' => $request->stok,
             'harga' => $request->harga,
@@ -65,7 +63,6 @@ class BarangController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'supplier_id' => 'required',
             'nama' => 'required',
             'stok' => 'required',
             'harga' => 'required',
@@ -84,7 +81,6 @@ class BarangController extends Controller
             Storage::delete('public/posts/' . basename($barang->image));
 
             $barang->update([
-                'supplier_id' => $request->supplier_id,
                 'nama' => $request->nama,
                 'stok' => $request->stok,
                 'harga' => $request->harga,
@@ -92,7 +88,6 @@ class BarangController extends Controller
             ]);
         } else {
             $barang->update([
-                'supplier_id' => $request->supplier_id,
                 'nama' => $request->nama,
                 'stok' => $request->stok,
                 'harga' => $request->harga,

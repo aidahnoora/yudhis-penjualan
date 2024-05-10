@@ -6,32 +6,33 @@ import api from "../../api"
 
 const router = useRouter()
 
-const image = ref("")
 const nama = ref("")
-const stok = ref("")
-const harga = ref("")
+const username = ref("")
+const email = ref("")
+const no_hp = ref("")
+const password = ref("")
+
 const errors = ref([])
 
-const handleFileChange = e => {
-  image.value = e.target.files[0]
-}
-    
-const storeBarang = async () => {
+const isPasswordVisible = ref(false)
+
+const registerUser = async () => {
   let formData = new FormData()
 
-  formData.append("image", image.value)
   formData.append("nama", nama.value)
-  formData.append("stok", stok.value)
-  formData.append("harga", harga.value)
+  formData.append("username", username.value)
+  formData.append("email", email.value)
+  formData.append("no_hp", no_hp.value)
+  formData.append("password", password.value)
 
-  await api.post('/api/barangs', formData)
+  await api.post('/api/register', formData)
     .then(() => {
       Swal.fire({
         icon: 'success',
         title: 'Berhasil',
         text: 'Data berhasil disimpan!',
       }).then(() => {
-        router.push({ path: '/barangs' })
+        router.push({ path: '/users' })
       })
     })
     .catch(error => {
@@ -48,42 +49,16 @@ const storeBarang = async () => {
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard title="Tambah Data Barang">
+      <VCard title="Tambah Data User">
         <VCardText>
-          <VForm @submit.prevent="storeBarang">
+          <VForm @submit.prevent="registerUser">
             <VCol cols="12">
               <VRow no-gutters>
                 <VCol
                   cols="12"
                   md="3"
                 >
-                  <label for="image">Image</label>
-                </VCol>
-
-                <VCol
-                  cols="12"
-                  md="9"
-                >
-                  <VTextField
-                    id="image"
-                    type="file"
-                    density="compact"
-                    prepend-inner-icon="bx-image"
-                    @change="handleFileChange($event)"
-                  />
-                  <VCol v-if="errors.image">
-                    <span style="color: red;">*{{ errors.image[0] }}</span>
-                  </VCol>
-                </VCol>
-              </VRow>
-            </VCol>
-            <VCol cols="12">
-              <VRow no-gutters>
-                <VCol
-                  cols="12"
-                  md="3"
-                >
-                  <label for="nama">Nama Barang</label>
+                  <label for="nama">Nama</label>
                 </VCol>
 
                 <VCol
@@ -93,8 +68,7 @@ const storeBarang = async () => {
                   <VTextField
                     id="nama"
                     v-model="nama"
-                    prepend-inner-icon="bx-cart"
-                    placeholder="Masukkan nama barang"
+                    placeholder="Masukkan nama"
                     persistent-placeholder
                     type="text"
                     density="compact"
@@ -111,7 +85,7 @@ const storeBarang = async () => {
                   cols="12"
                   md="3"
                 >
-                  <label for="stok">Stok</label>
+                  <label for="username">Username</label>
                 </VCol>
 
                 <VCol
@@ -119,16 +93,15 @@ const storeBarang = async () => {
                   md="9"
                 >
                   <VTextField
-                    id="stok"
-                    v-model="stok"
-                    prepend-inner-icon="bx-add-to-queue"
-                    placeholder="0"
+                    id="username"
+                    v-model="username"
+                    placeholder="Masukkan username"
                     persistent-placeholder
-                    type="number"
+                    type="text"
                     density="compact"
                   />
-                  <VCol v-if="errors.stok">
-                    <span style="color: red;">*{{ errors.stok[0] }}</span>
+                  <VCol v-if="errors.username">
+                    <span style="color: red;">*{{ errors.username[0] }}</span>
                   </VCol>
                 </VCol>
               </VRow>
@@ -139,7 +112,7 @@ const storeBarang = async () => {
                   cols="12"
                   md="3"
                 >
-                  <label for="harga">Harga Satuan (Rp)</label>
+                  <label for="email">Email</label>
                 </VCol>
 
                 <VCol
@@ -147,22 +120,77 @@ const storeBarang = async () => {
                   md="9"
                 >
                   <VTextField
-                    id="harga"
-                    v-model="harga"
-                    prepend-inner-icon="bx-money"
-                    placeholder="0"
+                    id="email"
+                    v-model="email"
+                    placeholder="Masukkan email"
                     persistent-placeholder
-                    type="number"
+                    type="email"
                     density="compact"
                   />
-                  <VCol v-if="errors.harga">
-                    <span style="color: red;">*{{ errors.harga[0] }}</span>
+                  <VCol v-if="errors.email">
+                    <span style="color: red;">*{{ errors.email[0] }}</span>
+                  </VCol>
+                </VCol>
+              </VRow>
+            </VCol>
+            <VCol cols="12">
+              <VRow no-gutters>
+                <VCol
+                  cols="12"
+                  md="3"
+                >
+                  <label for="no_hp">Nomor Hp</label>
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="9"
+                >
+                  <VTextField
+                    id="no_hp"
+                    v-model="no_hp"
+                    placeholder="Masukkan nomor hp"
+                    persistent-placeholder
+                    type="text"
+                    density="compact"
+                  />
+                  <VCol v-if="errors.no_hp">
+                    <span style="color: red;">*{{ errors.no_hp[0] }}</span>
+                  </VCol>
+                </VCol>
+              </VRow>
+            </VCol>
+            <VCol cols="12">
+              <VRow no-gutters>
+                <VCol
+                  cols="12"
+                  md="3"
+                >
+                  <label for="password">Password</label>
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="9"
+                >
+                  <VTextField
+                    id="password"
+                    v-model="password"
+                    placeholder="············"
+                    :type="isPasswordVisible ? 'text' : 'password'"
+                    :append-inner-icon="isPasswordVisible ? 'bx-hide' : 'bx-show'"
+                    persistent-placeholder
+                    density="compact"
+                    @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                  />
+                  <VCol v-if="errors.password">
+                    <span style="color: red;">*{{ errors.password[0] }}</span>
                   </VCol>
                 </VCol>
               </VRow>
             </VCol>
             <VCol class="text-center">
-              <RouterLink to="/barangs">
+              <RouterLink to="/users">
                 <VBtn
                   prepend-icon="bx-x"
                   color="warning"

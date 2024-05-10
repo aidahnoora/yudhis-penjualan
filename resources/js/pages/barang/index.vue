@@ -73,9 +73,6 @@ const deleteBarang = async id => {
                   Image
                 </th>
                 <th scope="col">
-                  Supplier
-                </th>
-                <th scope="col">
                   Nama
                 </th>
                 <th scope="col">
@@ -93,7 +90,7 @@ const deleteBarang = async id => {
             <tbody>
               <tr v-if="barangs.length == 0">
                 <td
-                  colspan="4"
+                  colspan="6"
                   class="text-center"
                 >
                   Data Belum Tersedia!
@@ -113,9 +110,6 @@ const deleteBarang = async id => {
                     width="100"
                     class="rounded-3"
                   >
-                </td>
-                <td>
-                  {{ barang.supplier.nama }}
                 </td>
                 <td>
                   {{ barang.nama }}

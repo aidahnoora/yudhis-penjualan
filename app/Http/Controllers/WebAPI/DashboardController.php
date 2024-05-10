@@ -4,7 +4,11 @@ namespace App\Http\Controllers\WebAPI;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DashboardResource;
+use App\Models\Barang;
+use App\Models\Customer;
+use App\Models\Supplier;
 use App\Models\TransaksiPenjualan;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -37,5 +41,20 @@ class DashboardController extends Controller
         // dd($jumlahTransaksiPerBulan);
 
         return new DashboardResource(true, 'List Jumlah Transaksi Penjualan', $jumlahTransaksiPerBulan);
+    }
+
+    public function getCategories()
+    {
+        $suppliers = Supplier::count();
+        $barangs = Barang::count();
+        $customers = Customer::count();
+        $users = User::count();
+
+        return new DashboardResource(true, 'Get All Count for Card', [
+            'suppliers' => $suppliers,
+            'barangs' => $barangs,
+            'customers' => $customers,
+            'users' => $users,
+        ]);
     }
 }

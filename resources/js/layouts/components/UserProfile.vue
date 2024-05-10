@@ -1,6 +1,5 @@
-
 <script setup>
-import avatar1 from '@images/avatars/avatar-1.png'
+import logo from '@images/avatars/yudhis-logo.jpeg'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
 import api from '../../api'
@@ -8,16 +7,26 @@ import api from '../../api'
 const router = useRouter()
 
 const handleLogout = async () => {
+  const token = localStorage.getItem('token') // Ambil token dari localStorage
+
   try {
-    await api.post('/api/logout')
+    await api.post('/api/logout', null, { // Mengirim token sebagai bagian dari permintaan
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    
     localStorage.removeItem('loggedIn')
     localStorage.removeItem('token')
+
     Swal.fire({
       icon: 'success',
       title: 'Berhasil',
       text: 'Logout berhasil!',
     }).then(() => {
-      router.push({ path: '/login' })
+      router.push({ name: 'login' })
+
+      console.log('Redirecting to login page...')
     })
   } catch (error) {
     Swal.fire({
@@ -29,6 +38,7 @@ const handleLogout = async () => {
   }
 }
 </script>
+
 
 <template>
   <VBadge
@@ -44,7 +54,7 @@ const handleLogout = async () => {
       color="primary"
       variant="tonal"
     >
-      <VImg :src="avatar1" />
+      <VImg :src="logo" />
 
       <!-- SECTION Menu -->
       <VMenu
@@ -69,7 +79,7 @@ const handleLogout = async () => {
                     color="primary"
                     variant="tonal"
                   >
-                    <VImg :src="avatar1" />
+                    <VImg :src="logo" />
                   </VAvatar>
                 </VBadge>
               </VListItemAction>

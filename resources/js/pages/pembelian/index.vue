@@ -3,20 +3,20 @@ import Swal from 'sweetalert2'
 import { onMounted, ref } from 'vue'
 import api from '../../api'
 
-const customers = ref([])
+const pembelians = ref([])
 
-const fetchDataCustomers = async () => {
-  await api.get('/api/customers')
+const fetchDataPembelians = async () => {
+  await api.get('/api/pembelians')
     .then(response => {
-      customers.value = response.data.data.data
+      pembelians.value = response.data.data.data
     })
 }
 
 onMounted(() => {
-  fetchDataCustomers()
+  fetchDataPembelians()
 })
 
-const deleteCustomer = async id => {
+const deletePembelian = async id => {
   Swal.fire({
     title: 'Apakah Anda yakin?',
     text: 'Data yang telah dihapus tidak dapat dikembalikan!',
@@ -26,9 +26,9 @@ const deleteCustomer = async id => {
     cancelButtonText: 'Batal',
   }).then(async result => {
     if (result.isConfirmed) {
-      await api.delete(`/api/customers/${id}`)
+      await api.delete(`/api/pembelians/${id}`)
         .then(() => {
-          fetchDataCustomers()
+          fetchDataPembelians()
           Swal.fire('Berhasil!', 'Data berhasil dihapus.', 'success')
         })
         .catch(error => {
@@ -40,6 +40,12 @@ const deleteCustomer = async id => {
 </script>
 
 <template>
+  <VCol
+    cols="12"
+    md="12"
+  >
+    <AnalyticsFinanceTab />
+  </VCol>
   <VRow>
     <VCol cols="12">
       <VCard>
@@ -47,11 +53,11 @@ const deleteCustomer = async id => {
           <VCardItem>
             <template #prepend>
               <VCardTitle>
-                Data Customer
+                Data Transaksi Pembelian
               </VCardTitle>
             </template>
             <template #append>
-              <RouterLink :to="{ name: 'customers.create' }">
+              <RouterLink :to="{ name: 'pembelians.create' }">
                 <VBtn
                   color="primary"
                   prepend-icon="bx-plus"
@@ -70,13 +76,16 @@ const deleteCustomer = async id => {
                   No.
                 </th>
                 <th scope="col">
-                  Nama
+                  Nota
                 </th>
                 <th scope="col">
-                  Nomor Hp
+                  Supplier
                 </th>
                 <th scope="col">
-                  Alamat
+                  Tanggal Transaksi
+                </th>
+                <th scope="col">
+                  Total
                 </th>
                 <th scope="col">
                   Actions
@@ -85,45 +94,59 @@ const deleteCustomer = async id => {
             </thead>
 
             <tbody>
-              <tr v-if="customers.length == 0">
+              <tr v-if="pembelians.length == 0">
                 <td
-                  colspan="5"
+                  colspan="6"
                   class="text-center"
                 >
                   Data Belum Tersedia!
                 </td>
               </tr>
               <tr
-                v-for="(customer, index) in customers"
+                v-for="(pembelian, index) in pembelians"
                 v-else
                 :key="index"
               >
                 <td>
                   {{ index + 1 }}.
-                </td>  
-                <td>
-                  {{ customer.nama }}
                 </td>
                 <td class="text-center">
-                  {{ customer.no_hp }}
+                  {{ pembelian.nota }}
                 </td>
                 <td class="text-center">
-                  {{ customer.alamat }}
+                  {{ pembelian.supplier.nama }}
                 </td>
                 <td class="text-center">
-                  <RouterLink :to="{ name: 'customers.edit', params:{id: customer.id} }">
+                  {{ pembelian.tgl_transaksi }}
+                </td>
+                <td class="text-center">
+                  Rp. {{ pembelian.total }}
+                </td>
+                <td class="text-center">
+                  <RouterLink :to="{ name: 'pembelians.show', params:{id: pembelian.id} }">
+                    <VBtn
+                      color="info"
+                      size="small"
+                      append-icon="mdi-eye"
+                    >
+                      DETAIL
+                    </VBtn>
+                  </RouterLink>
+                  <RouterLink :to="{ name: 'pembelians.edit', params:{id: pembelian.id} }">
                     <VBtn
                       color="warning"
+                      style="margin: 2px;"
+                      size="small"
                       append-icon="bx-edit"
                     >
                       EDIT
                     </VBtn>
                   </RouterLink>
                   <VBtn 
-                    color="error" 
-                    style="margin: 2px;"
+                    color="error"
+                    size="small"
                     append-icon="bx-eraser"
-                    @click.prevent="deleteCustomer(customer.id)"
+                    @click.prevent="deletePembelian(pembelian.id)"
                   >
                     HAPUS
                   </VBtn>

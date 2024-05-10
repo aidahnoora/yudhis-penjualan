@@ -4,33 +4,31 @@ namespace App\Http\Controllers\WebAPI;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BarangResource;
-use App\Http\Resources\CustomerResource;
+use App\Http\Resources\SupplierResource;
 use App\Http\Resources\TransaksiResource;
 use App\Models\Barang;
-use App\Models\Customer;
-use App\Models\ItemTransaksiPenjualan;
-use App\Models\TransaksiPenjualan;
-use Barryvdh\DomPDF\PDF;
+use App\Models\ItemTransaksiPembelian;
+use App\Models\Supplier;
+use App\Models\TransaksiPembelian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class TransaksiController extends Controller
+class TransaksiPembelianController extends Controller
 {
     public function index()
     {
-        $transaksis = TransaksiPenjualan::with('customer')
-            ->with('user')
+        $transaksis = TransaksiPembelian::with('supplier')
             ->latest()->paginate(100);
 
         return new TransaksiResource(true, 'List Data Transaksi', $transaksis);
     }
 
-    public function getCustomers()
+    public function getSuppliers()
     {
-        $customers = Customer::latest()->paginate(100);
+        $suppliers = Supplier::latest()->paginate(100);
 
-        return new CustomerResource(true, 'List Customer', $customers);
+        return new SupplierResource(true, 'List Supplier', $suppliers);
     }
 
     public function getBarangs()
@@ -42,7 +40,7 @@ class TransaksiController extends Controller
 
     public function getItemTransaksis($transaksiId)
     {
-        $itemTransaksis = ItemTransaksiPenjualan::with('barang')->where('penjualan_id', $transaksiId)
+        $itemTransaksis = ItemTransaksiPembelian::with('barang')->where('pembelian_id', $transaksiId)
             ->latest()->paginate(100);
 
         return new TransaksiResource(true, 'List Item Transaksi', $itemTransaksis);
@@ -51,7 +49,7 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'customer_id' => 'required',
+            'supplier_id' => 'required',
             'nota' => 'required',
             'tgl_transaksi' => 'required',
             'items' => 'required|array',
@@ -64,9 +62,8 @@ class TransaksiController extends Controller
         }
 
         $transaksi = DB::transaction(function () use ($request) {
-            $header = TransaksiPenjualan::create([
-                'user_id' => 1,
-                'customer_id' => $request->customer_id,
+            $header = TransaksiPembelian::create([
+                'supplier_id' => $request->supplier_id,
                 'nota' => $request->nota,
                 'tgl_transaksi' => $request->tgl_transaksi,
                 'total' => $request->total,
@@ -76,7 +73,7 @@ class TransaksiController extends Controller
             foreach ($request->items as $item) {
                 // $subtotal = $item['qty'] * $item['harga'];
                 $items[] = [
-                    'penjualan_id' => $header->id,
+                    'pembelian_id' => $header->id,
                     'barang_id' => $item['barang_id'],
                     'qty' => $item['qty'],
                     'subtotal' => $item['subtotal'],
@@ -85,11 +82,11 @@ class TransaksiController extends Controller
                 ];
             }
 
-            ItemTransaksiPenjualan::insert($items);
+            ItemTransaksiPembelian::insert($items);
 
             // Update otomatis stok data barang
             foreach ($request->items as $item) {
-                Barang::where('id', $item['barang_id'])->decrement('stok', $item['qty']);
+                Barang::where('id', $item['barang_id'])->increment('stok', $item['qty']);
             }
 
             return $header;
@@ -100,7 +97,7 @@ class TransaksiController extends Controller
 
     public function show($id)
     {
-        $transaksi = TransaksiPenjualan::find($id);
+        $transaksi = TransaksiPembelian::find($id);
 
         return new TransaksiResource(true, 'Detail Data Transaksi!', $transaksi);
     }
@@ -108,8 +105,7 @@ class TransaksiController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'customer_id' => 'required',
-            'nota' => 'required',
+            'supplier_id' => 'required',
             'tgl_transaksi' => 'required',
         ]);
 
@@ -117,12 +113,10 @@ class TransaksiController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $transaksi = TransaksiPenjualan::find($id);
+        $transaksi = TransaksiPembelian::find($id);
 
         $transaksi->update([
-            'user_id' => 1,
-            'customer_id' => $request->customer_id,
-            'nota' => $request->nota,
+            'supplier_id' => $request->supplier_id,
             'tgl_transaksi' => $request->tgl_transaksi,
             'total' => $request->total,
         ]);
@@ -132,7 +126,7 @@ class TransaksiController extends Controller
 
     public function destroy($id)
     {
-        $transaksi = TransaksiPenjualan::find($id);
+        $transaksi = TransaksiPembelian::find($id);
 
         $transaksi->delete();
 
@@ -144,7 +138,7 @@ class TransaksiController extends Controller
         $bulan = $request->input('bulan');
         $tahun = $request->input('tahun');
 
-        $transaksis = TransaksiPenjualan::with('customer')->whereMonth('tgl_transaksi', $bulan)
+        $transaksis = TransaksiPembelian::with('supplier')->whereMonth('tgl_transaksi', $bulan)
             ->whereYear('tgl_transaksi', $tahun)
             ->get();
 
@@ -156,15 +150,15 @@ class TransaksiController extends Controller
         $bulan = $request->input('bulan');
         $tahun = $request->input('tahun');
 
-        $transaksis = TransaksiPenjualan::with('customer')->whereMonth('tgl_transaksi', $bulan)
+        $transaksis = TransaksiPembelian::with('supplier')->whereMonth('tgl_transaksi', $bulan)
             ->whereYear('tgl_transaksi', $tahun)
             ->get();
 
         $namaBulan = \DateTime::createFromFormat('!m', $bulan)->format('F'); // Ubah angka bulan menjadi nama bulan
         $now = now();
-        $namaFile = '[' . $now . ']' . ' - Laporan-Transaksi-Penjualan-' . $namaBulan . '-' . $tahun . '.pdf';
+        $namaFile = '[' . $now . ']' . ' - Laporan-Transaksi-Pembelian-' . $namaBulan . '-' . $tahun . '.pdf';
 
-        $pdf = \PDF::loadView('pdf.transaksi-penjualan', ['transaksis' => $transaksis]);
+        $pdf = \PDF::loadView('pdf.transaksi-pembelian', ['transaksis' => $transaksis]);
 
         return $pdf->download($namaFile);
     }

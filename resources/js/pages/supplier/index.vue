@@ -87,7 +87,7 @@ const deleteSupplier = async id => {
             <tbody>
               <tr v-if="suppliers.length == 0">
                 <td
-                  colspan="4"
+                  colspan="5"
                   class="text-center"
                 >
                   Data Belum Tersedia!

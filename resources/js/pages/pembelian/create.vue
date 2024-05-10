@@ -6,26 +6,24 @@ import api from "../../api"
 
 const router = useRouter()
 
-const customers = ref([])
-const customer_id = ref(null)
+const suppliers = ref([])
+const supplier_id = ref(null)
 const tgl_transaksi = ref("")
-const total = ref("")
 
 const barangs = ref([])
 const barang_id = ref(null)
-const subtotal = ref("")
 const qty = ref("")
 const errors = ref([])
 
 const barangTerpilih = ref([])
 
-const getCustomers = async () => {
+const getSuppliers = async () => {
   try {
-    const response = await api.get('/api/get-customers')
+    const response = await api.get('/api/get-suppliers')
 
-    customers.value = response.data.data.data
+    suppliers.value = response.data.data.data
   } catch (error) {
-    console.error('Error fetching customers:', error)
+    console.error('Error fetching suppliers:', error)
   }
 }
 
@@ -68,18 +66,6 @@ const tambahBarang = () => {
     qty: qty.value,
   }
 
-  const stokBarang = barangs.value.find(item => item.id === barang.barang_id)?.stok
-
-  if (stokBarang < barang.qty) {
-    Swal.fire({
-      icon: "warning",
-      title: "Peringatan",
-      text: `Stok tidak cukup! Sisa stok adalah ${stokBarang}`,
-    })
-    
-    return
-  }
-
   barangTerpilih.value.push(barang)
 
   // console.log(barang)
@@ -97,7 +83,7 @@ const totalTransaksi = computed(() => {
 })
 
 function generateNota() {
-  const hurufAwal = "TRJ"
+  const hurufAwal = "TRB"
   const panjangAngka = 6 // Panjang angka yang diinginkan
 
   const angkaRandom = Math.floor(Math.random() * Math.pow(10, panjangAngka))
@@ -112,7 +98,7 @@ console.log(nota)
 const storeTransaksi = async () => {
   const formData = new FormData()
 
-  formData.append("customer_id", customer_id.value)
+  formData.append("supplier_id", supplier_id.value)
   formData.append("nota", nota)
   formData.append("tgl_transaksi", tgl_transaksi.value)
   formData.append("total", totalTransaksi.value)
@@ -124,13 +110,13 @@ const storeTransaksi = async () => {
   })
 
   try {
-    await api.post('/api/transaksis', formData)
+    await api.post('/api/pembelians', formData)
     Swal.fire({
       icon: 'success',
       title: 'Berhasil',
       text: 'Data berhasil disimpan!',
     }).then(() => {
-      router.push({ path: '/transaksis' })
+      router.push({ path: '/pembelians' })
     })
   } catch (error) {
     Swal.fire({
@@ -143,14 +129,14 @@ const storeTransaksi = async () => {
 }
 
 onMounted(() => {
-  getCustomers(),
+  getSuppliers(),
   getBarangs()
 })
 
-const customerOptions = computed(() => {
-  return customers.value.map(customer => ({
-    title: customer.nama,
-    value: customer.id,
+const supplierOptions = computed(() => {
+  return suppliers.value.map(supplier => ({
+    title: supplier.nama,
+    value: supplier.id,
   }))
 })
 
@@ -175,7 +161,7 @@ const barangOptions = computed(() => {
                   cols="12"
                   md="3"
                 >
-                  <label for="customer_id">Customer</label>
+                  <label for="supplier_id">Supplier</label>
                 </VCol>
 
                 <VCol
@@ -183,15 +169,15 @@ const barangOptions = computed(() => {
                   md="9"
                 >
                   <VSelect
-                    v-model="customer_id"
-                    :items="customerOptions"
-                    placeholder="Pilih Customer"
+                    v-model="supplier_id"
+                    :items="supplierOptions"
+                    placeholder="Pilih Supplier"
                     dense
                     density="compact"
                   />
 
-                  <VCol v-if="errors.customer_id">
-                    <span style="color: red;">*{{ errors.customer_id[0] }}</span>
+                  <VCol v-if="errors.supplier_id">
+                    <span style="color: red;">*{{ errors.supplier_id[0] }}</span>
                   </VCol>
                 </VCol>
               </VRow>
@@ -372,7 +358,7 @@ const barangOptions = computed(() => {
             </VCol>
     
             <VCol class="text-center">
-              <RouterLink to="/transaksis">
+              <RouterLink to="/pembelians">
                 <VBtn
                   prepend-icon="bx-x"
                   color="warning"

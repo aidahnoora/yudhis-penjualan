@@ -1,34 +1,31 @@
 <script setup>
-import Swal from 'sweetalert2'
 import { computed, onMounted, ref } from "vue"
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import api from "../../api"
 
-const router = useRouter()
 const route = useRoute()
 
-const customers = ref([])
-const customer_id = ref(null)
+const suppliers = ref([])
+const supplier_id = ref(null)
 const nota = ref("")
 const tgl_transaksi = ref("")
 const total = ref("")
 
 const itemTransaksis = ref([])
-const errors = ref([])
 
-const getCustomers = async () => {
+const getSuppliers = async () => {
   try {
-    const response = await api.get('/api/get-customers')
+    const response = await api.get('/api/get-suppliers')
 
-    customers.value = response.data.data.data
+    suppliers.value = response.data.data.data
   } catch (error) {
-    console.error('Error fetching customers:', error)
+    console.error('Error fetching suppliers:', error)
   }
 }
 
 const getItemTransaksis = async () => {
   try {
-    const response = await api.get(`api/transaksis/${route.params.id}/items`)
+    const response = await api.get(`api/pembelians/${route.params.id}/items`)
 
     // console.log('Item Transaksis:', response.data.data)
     itemTransaksis.value = response.data.data.data
@@ -38,49 +35,21 @@ const getItemTransaksis = async () => {
 }
 
 onMounted( async () => {
-  await api.get(`/api/transaksis/${route.params.id}`)
+  await api.get(`/api/pembelians/${route.params.id}`)
     .then(response => {
-      customer_id.value = response.data.data.customer_id
+      supplier_id.value = response.data.data.supplier_id
       nota.value = response.data.data.nota
       tgl_transaksi.value = response.data.data.tgl_transaksi
       total.value = response.data.data.total
     }),
-  getCustomers(),
+  getSuppliers(),
   getItemTransaksis()
 })
 
-const updateTransaksi = async () => {
-  const formData = new FormData()
-
-  formData.append("customer_id", customer_id.value)
-  formData.append("nota", nota.value)
-  formData.append("tgl_transaksi", tgl_transaksi.value)
-  formData.append("total", total.value)
-  formData.append("_method", "PATCH")
-
-  try {
-    await api.post(`/api/transaksis/${route.params.id}`, formData)
-    Swal.fire({
-      icon: 'success',
-      title: 'Berhasil',
-      text: 'Data berhasil diperbarui!',
-    }).then(() => {
-      router.push({ path: '/transaksis' })
-    })
-  } catch (error) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Gagal memperbarui data. Ulangi lagi.',
-    })
-    errors.value = error.response.data
-  }
-}
-
-const customerOptions = computed(() => {
-  return customers.value.map(customer => ({
-    title: customer.nama,
-    value: customer.id,
+const supplierOptions = computed(() => {
+  return suppliers.value.map(supplier => ({
+    title: supplier.nama,
+    value: supplier.id,
   }))
 })
 </script>
@@ -88,16 +57,16 @@ const customerOptions = computed(() => {
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard title="Edit Data Transaksi">
+      <VCard title="Detail Data Transaksi">
         <VCardText>
-          <VForm @submit.prevent="updateTransaksi">
+          <VForm>
             <VCol cols="12">
               <VRow no-gutters>
                 <VCol
                   cols="12"
                   md="3"
                 >
-                  <label for="customer_id">Customer</label>
+                  <label for="supplier_id">Supplier</label>
                 </VCol>
 
                 <VCol
@@ -105,15 +74,12 @@ const customerOptions = computed(() => {
                   md="9"
                 >
                   <VSelect
-                    v-model="customer_id"
-                    :items="customerOptions"
+                    v-model="supplier_id"
+                    :items="supplierOptions"
                     dense
                     density="compact"
+                    disabled
                   />
-
-                  <VCol v-if="errors.customer_id">
-                    <span style="color: red;">*{{ errors.customer_id[0] }}</span>
-                  </VCol>
                 </VCol>
               </VRow>
             </VCol>
@@ -133,14 +99,10 @@ const customerOptions = computed(() => {
                   <VTextField
                     id="nota"
                     v-model="nota"
-                    prepend-inner-icon="bx-file"
                     type="text"
                     density="compact"
-                    readonly=""
+                    disabled
                   />
-                  <VCol v-if="errors.nota">
-                    <span style="color: red;">*{{ errors.nota[0] }}</span>
-                  </VCol>
                 </VCol>
               </VRow>
             </VCol>
@@ -162,10 +124,8 @@ const customerOptions = computed(() => {
                     v-model="tgl_transaksi"
                     type="date"
                     density="compact"
+                    disabled
                   />
-                  <VCol v-if="errors.tgl_transaksi">
-                    <span style="color: red;">*{{ errors.tgl_transaksi[0] }}</span>
-                  </VCol>
                 </VCol>
               </VRow>
             </VCol>
@@ -189,9 +149,6 @@ const customerOptions = computed(() => {
                     density="compact"
                     disabled
                   />
-                  <VCol v-if="errors.total">
-                    <span style="color: red;">*{{ errors.total[0] }}</span>
-                  </VCol>
                 </VCol>
               </VRow>
             </VCol>
@@ -224,10 +181,10 @@ const customerOptions = computed(() => {
                       {{ item.qty }}
                     </td>
                     <td class="text-center">
-                      {{ item.barang.harga }}
+                      Rp. {{ item.barang.harga }}
                     </td>
                     <td class="text-center">
-                      {{ item.subtotal }}
+                      Rp. {{ item.subtotal }}
                     </td>
                   </tr>
                 </tbody>
@@ -235,7 +192,7 @@ const customerOptions = computed(() => {
             </VCol>
     
             <VCol class="text-center">
-              <RouterLink to="/transaksis">
+              <RouterLink to="/pembelians">
                 <VBtn
                   prepend-icon="bx-x"
                   color="warning"
@@ -243,14 +200,6 @@ const customerOptions = computed(() => {
                   KEMBALI
                 </VBtn>
               </RouterLink>
-              <VBtn
-                type="submit"
-                color="primary"
-                append-icon="bx-save"
-                style="margin-left: 2px;"
-              >
-                UPDATE
-              </VBtn>
             </VCol>
           </VForm>
         </VCardText>

@@ -9,11 +9,11 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Grafik Peminjaman",
+      default: "Grafik Penjualan",
     },
     detail1: {
       type: String,
-      default: " Peminjaman Buku",
+      default: " Penjualan Sparepart",
     },
     detail2: {
       type: String,
@@ -29,7 +29,7 @@ export default {
         const responseData = response.data // Data dari respons API
 
         if (responseData.success && Array.isArray(responseData.data)) {
-          const data = responseData.data // Ambil array data transaksi peminjaman
+          const data = responseData.data // Ambil array data transaksi Penjualan
 
           const labels = data.map(item => item.bulan)
           const values = data.map(item => item.jumlah_transaksi)
@@ -79,12 +79,12 @@ export default {
                     borderDash: [5, 5],
                   },
                   ticks: {
-                    display: true,
+                    display: false,
                     padding: 10,
                     color: "#fbfbfb",
                     font: {
-                      size: 11,
-                      family: "Open Sans",
+                      size: 14,
+                      family: "Public Sans",
                       style: "normal",
                       lineHeight: 2,
                     },
@@ -100,7 +100,7 @@ export default {
                   },
                   ticks: {
                     display: true,
-                    color: "#ccc",
+                    color: "#black",
                     padding: 20,
                     font: {
                       size: 14,

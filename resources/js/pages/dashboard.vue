@@ -1,6 +1,6 @@
 <script setup>
 import AnalyticsCongratulations from '@/views/dashboard/AnalyticsCongratulations.vue'
-import AnalyticsFinanceTabs from '@/views/dashboard/AnalyticsFinanceTab.vue'
+import AnalyticsTransactions from '@/views/dashboard/AnalyticsTransactions.vue'
 
 // 👉 Images
 </script>
@@ -20,7 +20,7 @@ import AnalyticsFinanceTabs from '@/views/dashboard/AnalyticsFinanceTab.vue'
       cols="12"
       md="12"
     >
-      <AnalyticsFinanceTabs />
+      <AnalyticsTransactions />
     </VCol>
   </VRow>
 </template>

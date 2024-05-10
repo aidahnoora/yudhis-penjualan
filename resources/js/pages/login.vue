@@ -13,7 +13,8 @@ const router = useRouter()
 const errors = ref([])
 const isPasswordVisible = ref(false)
 const loggedIn = localStorage.getItem('loggedIn')
-const token = localStorage.getItem('token')
+
+// const token = localStorage.getItem('token')
 const user = []
 let loginFailed = null
 
@@ -27,15 +28,19 @@ const login = async () => {
         password: form.value.password,
       })
 
+      const token = response.data.data.access_token
+
       localStorage.setItem('loggedIn', true)
       localStorage.setItem('token', token)
+
+      // console.log(token)
 
       Swal.fire({
         icon: 'success',
         title: 'Berhasil',
         text: 'Login berhasil!',
       }).then(() => {
-        router.push({ path: 'dashboard' })
+        router.push({ name: 'dashboard' })
       })
     } catch (error) {
       Swal.fire({
@@ -125,20 +130,6 @@ const login = async () => {
                   Login
                 </VBtn>
               </VCol>
-            </VCol>
-
-            <!-- create account -->
-            <VCol
-              cols="12"
-              class="text-center text-base"
-            >
-              <span>New on our platform?</span>
-              <RouterLink
-                class="text-primary ms-2"
-                to="/register"
-              >
-                Create an account
-              </RouterLink>
             </VCol>
           </VRow>
         </VForm>
