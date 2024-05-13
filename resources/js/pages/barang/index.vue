@@ -1,44 +1,3 @@
-<script setup>
-import Swal from 'sweetalert2'
-import { onMounted, ref } from 'vue'
-import api from '../../api'
-
-const barangs = ref([])
-
-const fetchDataBarangs = async () => {
-  await api.get('/api/barangs')
-    .then(response => {
-      barangs.value = response.data.data.data
-    })
-}
-
-onMounted(() => {
-  fetchDataBarangs()
-})
-
-const deleteBarang = async id => {
-  Swal.fire({
-    title: 'Apakah Anda yakin?',
-    text: 'Data yang telah dihapus tidak dapat dikembalikan!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Ya, hapus!',
-    cancelButtonText: 'Batal',
-  }).then(async result => {
-    if (result.isConfirmed) {
-      await api.delete(`/api/barangs/${id}`)
-        .then(() => {
-          fetchDataBarangs()
-          Swal.fire('Berhasil!', 'Data berhasil dihapus.', 'success')
-        })
-        .catch(error => {
-          Swal.fire('Error!', 'Gagal menghapus data.', 'error')
-        })
-    }
-  })
-}
-</script>
-
 <template>
   <VRow>
     <VCol cols="12">
@@ -63,6 +22,32 @@ const deleteBarang = async id => {
           </VCardItem>
         </VSheet>
         <VCardText>
+          <VCol cols="12">
+            <VForm>
+              <VRow no-gutters>
+                <VCol
+                  cols="12"
+                  md="3"
+                >
+                  <label
+                    for="search"
+                    style="font-weight: bold;"
+                  >Cari Barang</label>
+                </VCol>
+                <VCol
+                  cols="12"
+                  md="9"
+                >
+                  <VTextField
+                    v-model="search"
+                    type="text"
+                    placeholder="Cari barang berdasarkan nama barang ..."
+                    density="compact"
+                  />
+                </VCol>
+              </VRow>
+            </VForm>
+          </VCol>
           <VTable>
             <thead>
               <tr>
@@ -88,7 +73,7 @@ const deleteBarang = async id => {
             </thead>
 
             <tbody>
-              <tr v-if="barangs.length == 0">
+              <tr v-if="filteredBarangs.length === 0">
                 <td
                   colspan="6"
                   class="text-center"
@@ -97,8 +82,7 @@ const deleteBarang = async id => {
                 </td>
               </tr>
               <tr
-                v-for="(barang, index) in barangs"
-                v-else
+                v-for="(barang, index) in filteredBarangs"
                 :key="index"
               >
                 <td>
@@ -146,3 +130,55 @@ const deleteBarang = async id => {
     </VCol>
   </VRow>
 </template>
+
+<script setup>
+import Swal from 'sweetalert2'
+import { computed, onMounted, ref } from 'vue'
+import api from '../../api'
+
+const barangs = ref([])
+const search = ref('')
+
+const fetchDataBarangs = async () => {
+  await api.get('/api/barangs')
+    .then(response => {
+      barangs.value = response.data.data.data
+    })
+}
+
+onMounted(() => {
+  fetchDataBarangs()
+})
+
+const deleteBarang = async id => {
+  Swal.fire({
+    title: 'Apakah Anda yakin?',
+    text: 'Data yang telah dihapus tidak dapat dikembalikan!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal',
+  }).then(async result => {
+    if (result.isConfirmed) {
+      await api.delete(`/api/barangs/${id}`)
+        .then(() => {
+          fetchDataBarangs()
+          Swal.fire('Berhasil!', 'Data berhasil dihapus.', 'success')
+        })
+        .catch(error => {
+          Swal.fire('Error!', 'Gagal menghapus data.', 'error')
+        })
+    }
+  })
+}
+
+const filteredBarangs = computed(() => {
+  return barangs.value.filter(barang => {
+    return barang.nama.toLowerCase().includes(search.value.toLowerCase())
+  })
+})
+</script>
+
+<style scoped>
+/* Styling sesuai kebutuhan Anda */
+</style>

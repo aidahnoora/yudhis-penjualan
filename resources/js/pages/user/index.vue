@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue'
 import api from '../../api'
 
 const users = ref([])
+const search = ref('')
 
 const fetchDataUsers = async () => {
   await api.get('/api/users')
@@ -37,6 +38,12 @@ const deleteUser = async id => {
     }
   })
 }
+
+const filteredUsers = computed(() => {
+  return users.value.filter(user => {
+    return user.nama.toLowerCase().includes(search.value.toLowerCase())
+  })
+})
 </script>
 
 <template>
@@ -63,6 +70,32 @@ const deleteUser = async id => {
           </VCardItem>
         </VSheet>
         <VCardText>
+          <VCol cols="12">
+            <VForm>
+              <VRow no-gutters>
+                <VCol
+                  cols="12"
+                  md="3"
+                >
+                  <label
+                    for="search"
+                    style="font-weight: bold;"
+                  >Cari User</label>
+                </VCol>
+                <VCol
+                  cols="12"
+                  md="9"
+                >
+                  <VTextField
+                    v-model="search"
+                    type="text"
+                    placeholder="Cari user berdasarkan nama ..."
+                    density="compact"
+                  />
+                </VCol>
+              </VRow>
+            </VForm>
+          </VCol>
           <VTable>
             <thead>
               <tr>
@@ -85,7 +118,7 @@ const deleteUser = async id => {
             </thead>
 
             <tbody>
-              <tr v-if="users.length == 0">
+              <tr v-if="filteredUsers.length == 0">
                 <td
                   colspan="6"
                   class="text-center"
@@ -94,7 +127,7 @@ const deleteUser = async id => {
                 </td>
               </tr>
               <tr
-                v-for="(user, index) in users"
+                v-for="(user, index) in filteredUsers"
                 v-else
                 :key="index"
               >

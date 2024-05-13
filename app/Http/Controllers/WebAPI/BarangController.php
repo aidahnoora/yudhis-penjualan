@@ -105,4 +105,13 @@ class BarangController extends Controller
 
         return new BarangResource(true, 'Data Barang Berhasil Dihapus!', null);
     }
+
+    // public function search(Request $request)
+    // {
+    //     $searchKeyword = $request->input('keyword');
+
+    //     $barangs = Barang::where('nama', 'like', "%$searchKeyword%")->get();
+
+    //     return response()->json(['items' => $barangs]);
+    // }
 }

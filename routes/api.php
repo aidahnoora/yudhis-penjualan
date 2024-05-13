@@ -8,6 +8,8 @@ use App\Http\Controllers\WebAPI\SupplierController;
 use App\Http\Controllers\WebAPI\TransaksiController;
 use App\Http\Controllers\WebAPI\TransaksiPembelianController;
 use App\Http\Controllers\WebAPI\UserController;
+use App\Models\Customer;
+use App\Models\Supplier;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,3 +53,5 @@ Route::get('/transaksi-penjualan/filter', [TransaksiController::class, 'filter']
 Route::get('/transaksi-penjualan/export-pdf', [TransaksiController::class, 'exportPDF']);
 Route::get('/transaksi-pembelian/filter', [TransaksiPembelianController::class, 'filter']);
 Route::get('/transaksi-pembelian/export-pdf', [TransaksiPembelianController::class, 'exportPDF']);
+
+// Route::get('/barangs/search', [BarangController::class, 'search']);

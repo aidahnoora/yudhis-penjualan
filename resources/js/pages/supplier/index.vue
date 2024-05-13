@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue'
 import api from '../../api'
 
 const suppliers = ref([])
+const search = ref('')
 
 const fetchDataSuppliers = async () => {
   await api.get('/api/suppliers')
@@ -37,6 +38,12 @@ const deleteSupplier = async id => {
     }
   })
 }
+
+const filteredSuppliers = computed(() => {
+  return suppliers.value.filter(supplier => {
+    return supplier.nama.toLowerCase().includes(search.value.toLowerCase())
+  })
+})
 </script>
 
 <template>
@@ -63,6 +70,32 @@ const deleteSupplier = async id => {
           </VCardItem>
         </VSheet>
         <VCardText>
+          <VCol cols="12">
+            <VForm>
+              <VRow no-gutters>
+                <VCol
+                  cols="12"
+                  md="3"
+                >
+                  <label
+                    for="search"
+                    style="font-weight: bold;"
+                  >Cari Supplier</label>
+                </VCol>
+                <VCol
+                  cols="12"
+                  md="9"
+                >
+                  <VTextField
+                    v-model="search"
+                    type="text"
+                    placeholder="Cari supplier berdasarkan nama ..."
+                    density="compact"
+                  />
+                </VCol>
+              </VRow>
+            </VForm>
+          </VCol>
           <VTable>
             <thead>
               <tr>
@@ -85,7 +118,7 @@ const deleteSupplier = async id => {
             </thead>
 
             <tbody>
-              <tr v-if="suppliers.length == 0">
+              <tr v-if="filteredSuppliers.length == 0">
                 <td
                   colspan="5"
                   class="text-center"
@@ -94,7 +127,7 @@ const deleteSupplier = async id => {
                 </td>
               </tr>
               <tr
-                v-for="(supplier, index) in suppliers"
+                v-for="(supplier, index) in filteredSuppliers"
                 v-else
                 :key="index"
               >

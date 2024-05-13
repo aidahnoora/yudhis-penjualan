@@ -1,9 +1,10 @@
 <script setup>
 import Swal from 'sweetalert2'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import api from '../../api'
 
 const customers = ref([])
+const search = ref('')
 
 const fetchDataCustomers = async () => {
   await api.get('/api/customers')
@@ -15,6 +16,20 @@ const fetchDataCustomers = async () => {
 onMounted(() => {
   fetchDataCustomers()
 })
+
+// const searchCustomer = async () => {
+//   await api.get('/api/customers/search', {
+//     params: {
+//       keyword: search.value,
+//     },
+//   })
+//     .then(response => {
+//       customers.value = response.data.items
+//     })
+//     .catch(error => {
+//       console.error(error)
+//     })
+// }
 
 const deleteCustomer = async id => {
   Swal.fire({
@@ -37,6 +52,12 @@ const deleteCustomer = async id => {
     }
   })
 }
+
+const filteredCustomers = computed(() => {
+  return customers.value.filter(customer => {
+    return customer.nama.toLowerCase().includes(search.value.toLowerCase())
+  })
+})
 </script>
 
 <template>
@@ -63,6 +84,32 @@ const deleteCustomer = async id => {
           </VCardItem>
         </VSheet>
         <VCardText>
+          <VCol cols="12">
+            <VForm>
+              <VRow no-gutters>
+                <VCol
+                  cols="12"
+                  md="3"
+                >
+                  <label
+                    for="search"
+                    style="font-weight: bold;"
+                  >Cari Customer</label>
+                </VCol>
+                <VCol
+                  cols="12"
+                  md="9"
+                >
+                  <VTextField
+                    v-model="search"
+                    type="text"
+                    placeholder="Cari customer berdasarkan nama ..."
+                    density="compact"
+                  />
+                </VCol>
+              </VRow>
+            </VForm>
+          </VCol>
           <VTable>
             <thead>
               <tr>
@@ -85,7 +132,7 @@ const deleteCustomer = async id => {
             </thead>
 
             <tbody>
-              <tr v-if="customers.length == 0">
+              <tr v-if="filteredCustomers.length == 0">
                 <td
                   colspan="5"
                   class="text-center"
@@ -94,7 +141,7 @@ const deleteCustomer = async id => {
                 </td>
               </tr>
               <tr
-                v-for="(customer, index) in customers"
+                v-for="(customer, index) in filteredCustomers"
                 v-else
                 :key="index"
               >
