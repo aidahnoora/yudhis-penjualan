@@ -58,7 +58,13 @@
                   Image
                 </th>
                 <th scope="col">
+                  Kode
+                </th>
+                <th scope="col">
                   Nama
+                </th>
+                <th scope="col">
+                  Tanggal Expired
                 </th>
                 <th scope="col">
                   Stok
@@ -75,7 +81,7 @@
             <tbody>
               <tr v-if="filteredBarangs.length === 0">
                 <td
-                  colspan="6"
+                  colspan="8"
                   class="text-center"
                 >
                   Data Belum Tersedia!
@@ -96,13 +102,19 @@
                   >
                 </td>
                 <td>
+                  {{ barang.kode }}
+                </td>
+                <td>
                   {{ barang.nama }}
+                </td>
+                <td>
+                  {{ barang.tgl_expired }}
                 </td>
                 <td class="text-center">
                   {{ barang.stok }}
                 </td>
                 <td class="text-center">
-                  {{ barang.harga }}
+                  Rp. {{ barang.harga }}
                 </td>
                 <td class="text-center">
                   <RouterLink :to="{ name: 'barangs.edit', params:{id: barang.id} }">

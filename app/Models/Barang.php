@@ -15,7 +15,9 @@ class Barang extends Model
         'nama',
         'stok',
         'harga',
-        'image'
+        'image',
+        'kode',
+        'tgl_expired',
     ];
 
     public function supplier()

@@ -1,7 +1,8 @@
 <script>
-import axios from "axios" // Import Axios untuk melakukan permintaan HTTP
 import Chart from "chart.js/auto"
 import { VCard } from "vuetify/lib/components/index.mjs"
+import api from '../../api'
+
 
 export default {
   name: "GradientLineChart",
@@ -24,7 +25,7 @@ export default {
   mounted() {
     var ctx1 = document.getElementById("chart-line").getContext("2d")
 
-    axios.get("http://127.0.0.1:8000/api/get-transaction")
+    api.get("/api/get-transaction")
       .then(response => {
         const responseData = response.data // Data dari respons API
 

@@ -10,6 +10,8 @@ const image = ref("")
 const nama = ref("")
 const stok = ref("")
 const harga = ref("")
+const kode = ref("")
+const tgl_expired = ref("")
 const errors = ref([])
 
 const handleFileChange = e => {
@@ -23,6 +25,8 @@ const storeBarang = async () => {
   formData.append("nama", nama.value)
   formData.append("stok", stok.value)
   formData.append("harga", harga.value)
+  formData.append("kode", kode.value)
+  formData.append("tgl_expired", tgl_expired.value)
 
   await api.post('/api/barangs', formData)
     .then(() => {
@@ -83,6 +87,34 @@ const storeBarang = async () => {
                   cols="12"
                   md="3"
                 >
+                  <label for="kode">Kode Barang</label>
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="9"
+                >
+                  <VTextField
+                    id="kode"
+                    v-model="kode"
+                    prepend-inner-icon="bx-barcode"
+                    placeholder="Masukkan kode barang"
+                    persistent-placeholder
+                    type="text"
+                    density="compact"
+                  />
+                  <VCol v-if="errors.kode">
+                    <span style="color: red;">*{{ errors.kode[0] }}</span>
+                  </VCol>
+                </VCol>
+              </VRow>
+            </VCol>
+            <VCol cols="12">
+              <VRow no-gutters>
+                <VCol
+                  cols="12"
+                  md="3"
+                >
                   <label for="nama">Nama Barang</label>
                 </VCol>
 
@@ -101,6 +133,33 @@ const storeBarang = async () => {
                   />
                   <VCol v-if="errors.nama">
                     <span style="color: red;">*{{ errors.nama[0] }}</span>
+                  </VCol>
+                </VCol>
+              </VRow>
+            </VCol>
+            <VCol cols="12">
+              <VRow no-gutters>
+                <VCol
+                  cols="12"
+                  md="3"
+                >
+                  <label for="tgl_expired">Tanggal Expired</label>
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="9"
+                >
+                  <VTextField
+                    id="tgl_expired"
+                    v-model="tgl_expired"
+                    prepend-inner-icon="bx-time"
+                    persistent-placeholder
+                    type="date"
+                    density="compact"
+                  />
+                  <VCol v-if="errors.tgl_expired">
+                    <span style="color: red;">*{{ errors.tgl_expired[0] }}</span>
                   </VCol>
                 </VCol>
               </VRow>

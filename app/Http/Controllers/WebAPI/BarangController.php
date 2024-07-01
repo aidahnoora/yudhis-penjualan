@@ -33,6 +33,8 @@ class BarangController extends Controller
             'stok' => 'required',
             'harga' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'kode' => 'required',
+            'tgl_expired' => 'required',
 
         ]);
 
@@ -48,6 +50,8 @@ class BarangController extends Controller
             'stok' => $request->stok,
             'harga' => $request->harga,
             'image' => $image->hashName(),
+            'kode' => $request->kode,
+            'tgl_expired' => $request->tgl_expired,
         ]);
 
         return new BarangResource(true, 'Data Barang Berhasil Ditambahkan!', $barang);
@@ -66,6 +70,7 @@ class BarangController extends Controller
             'nama' => 'required',
             'stok' => 'required',
             'harga' => 'required',
+            'tgl_expired' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -85,12 +90,16 @@ class BarangController extends Controller
                 'stok' => $request->stok,
                 'harga' => $request->harga,
                 'image' => $image->hashName(),
+                'kode' => $request->kode,
+                'tgl_expired' => $request->tgl_expired,
             ]);
         } else {
             $barang->update([
                 'nama' => $request->nama,
                 'stok' => $request->stok,
                 'harga' => $request->harga,
+                'kode' => $request->kode,
+                'tgl_expired' => $request->tgl_expired,
             ]);
         }
 
